@@ -1,20 +1,62 @@
 import { AlertCircle, BadgeCheck } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { GatePassPreview } from "../components/gate-pass/GatePassPreview";
-import { readSharedGatePass } from "../utils/gatePass";
+import { readSharedGatePass, type SharedGatePassPayload } from "../utils/gatePass";
+// import { gatePassService } from "../services/gatePassService";
+import { useAppStore } from "../store/AppContext";
 
 export function SharedGatePassPage() {
-  const shared = readSharedGatePass(window.location.hash);
+  const { passes, settings } = useAppStore();
+  const location = useLocation();
+  const [sharedPass, setSharedPass] = useState<SharedGatePassPayload | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!shared) {
+  const passId = useMemo(() => new URLSearchParams(location.search).get("passId"), [location.search]);
+
+  useEffect(() => {
+    if (passId) {
+      if (!passes.length) {
+        return;
+      }
+
+      const pass = passes.find((item) => item.id === passId);
+      if (pass) {
+        setSharedPass({ version: 1, pass, settings: { companyName: settings.companyName, address: settings.address, logo: settings.logo } });
+        setError(null);
+        return;
+      }
+
+      setError("Gate pass not found. Please ensure the QR code points to a valid saved pass.");
+      setSharedPass(null);
+      return;
+    }
+
+    const shared = readSharedGatePass(window.location.hash);
+    if (!shared) {
+      setError("QR code data is missing or damaged. Please scan the latest generated QR code.");
+      setSharedPass(null);
+      return;
+    }
+
+    setSharedPass(shared);
+    setError(null);
+  }, [passId, passes, settings]);
+
+  if (error) {
     return (
       <main className="grid min-h-screen place-items-center bg-slate-100 p-4">
         <section className="w-full max-w-md rounded-2xl border border-red-200 bg-white p-6 text-center shadow-xl">
           <AlertCircle className="mx-auto h-12 w-12 text-red-600" />
           <h1 className="mt-4 text-xl font-bold text-slate-900">Invalid Gate Pass QR</h1>
-          <p className="mt-2 text-sm text-slate-600">QR code data is missing or damaged. Please scan the latest generated QR code.</p>
+          <p className="mt-2 text-sm text-slate-600">{error}</p>
         </section>
       </main>
     );
+  }
+
+  if (!sharedPass) {
+    return null;
   }
 
   return (
@@ -27,7 +69,7 @@ export function SharedGatePassPage() {
         </div>
       </div>
       <div className="mx-auto max-w-[850px]">
-        <GatePassPreview pass={shared.pass} settings={shared.settings} />
+        <GatePassPreview pass={sharedPass.pass} settings={sharedPass.settings} />
       </div>
     </main>
   );

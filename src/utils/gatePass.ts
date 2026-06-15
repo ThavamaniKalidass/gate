@@ -14,13 +14,18 @@ export function generateGatePassNumber(sequence: number, date = new Date()) {
   return `GP/${format(date, "yyyy/MM")}/${String(sequence).padStart(4, "0")}`;
 }
 
-interface SharedGatePassPayload {
+export interface SharedGatePassPayload {
   version: 1;
   pass: Partial<GatePass>;
   settings: Pick<CompanySettings, "companyName" | "address" | "logo">;
 }
 
-export function getQrPayload(pass: Partial<GatePass>, settings: CompanySettings) {
+function getBaseShareUrl(settings: CompanySettings) {
+  const isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+  return isLocalhost && settings.publicUrl ? settings.publicUrl.trim().replace(/\/$/, "") : window.location.origin;
+}
+
+function getShareableGatePassUrl(pass: Partial<GatePass>, settings: CompanySettings) {
   const { qrCode: _qrCode, approvals, ...shareablePass } = pass;
   const { receiverSignature: _receiverSignature, ...shareableApprovals } = approvals ?? {};
   const payload: SharedGatePassPayload = {
@@ -36,9 +41,21 @@ export function getQrPayload(pass: Partial<GatePass>, settings: CompanySettings)
     },
   };
 
-  const isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
-  const baseUrl = isLocalhost && settings.publicUrl ? settings.publicUrl.trim().replace(/\/$/, "") : window.location.origin;
+  const baseUrl = getBaseShareUrl(settings);
   return `${baseUrl}/shared#pass=${encodePayload(payload)}`;
+}
+
+function getGatePassUrl(passId: string, settings: CompanySettings) {
+  const baseUrl = getBaseShareUrl(settings);
+  return `${baseUrl}/shared?passId=${encodeURIComponent(passId)}`;
+}
+
+export function getQrPayload(pass: Partial<GatePass>, settings: CompanySettings) {
+  if (pass.id) {
+    return getGatePassUrl(pass.id, settings);
+  }
+
+  return getShareableGatePassUrl(pass, settings);
 }
 
 export function readSharedGatePass(hash: string): SharedGatePassPayload | undefined {
