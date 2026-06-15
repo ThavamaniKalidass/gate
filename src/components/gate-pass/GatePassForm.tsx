@@ -9,7 +9,7 @@ import { gatePassService } from "../../services/gatePassService";
 import { useAppStore } from "../../store/AppContext";
 import { brandOptions, departments, deviceTypes, type GatePass } from "../../types/gate-pass";
 import { readFileAsDataUrl } from "../../utils/file";
-import { emptyItem, generateGatePassNumber, getQrPayload } from "../../utils/gatePass";
+import { emptyItem, generateGatePassNumber, generateGatePassQrCode, getQrPayload } from "../../utils/gatePass";
 import { gatePassSchema, type GatePassFormValues } from "../../validation/gatePassSchema";
 import { Button } from "../ui/Button";
 import { Card, CardHeader } from "../ui/Card";
@@ -89,7 +89,7 @@ export function GatePassForm({ onPreviewChange }: { onPreviewChange: (pass: Part
       createdAt: now,
       updatedAt: now,
     };
-    const qrCode = await QRCode.toDataURL(getQrPayload(passWithoutQr, settings), { width: 320, margin: 2 });
+    const qrCode = await generateGatePassQrCode(passWithoutQr, settings);
     const pass: GatePass = { ...passWithoutQr, qrCode };
     await savePass(pass);
     gatePassService.clearDraft();

@@ -8,19 +8,22 @@ import { useKeyboardShortcut } from "../hooks/useKeyboardShortcut";
 import { useAppStore } from "../store/AppContext";
 import type { GatePass } from "../types/gate-pass";
 import { exportElementToPdf } from "../utils/pdf";
-
 export function GatePassPage() {
-  const { settings } = useAppStore();
+  const { settings, savePass } = useAppStore();
   const [preview, setPreview] = useState<Partial<GatePass>>({});
 
   const exportPdf = useCallback(async () => {
     try {
-      await exportElementToPdf("gate-pass-preview", `${preview.gatePassNumber || "gate-pass"}.pdf`);
+      let passToExport: GatePass | Partial<GatePass> = preview;
+
+      passToExport = preview;
+
+      await exportElementToPdf("gate-pass-preview", `${passToExport.gatePassNumber || "gate-pass"}.pdf`);
       toast.success("PDF exported successfully");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "PDF export failed");
     }
-  }, [preview.gatePassNumber]);
+  }, [preview, savePass, settings]);
 
   useKeyboardShortcut("p", exportPdf);
 

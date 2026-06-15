@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import QRCode from "qrcode";
 import type { CompanySettings, GatePass, GatePassItem } from "../types/gate-pass";
 
 export const emptyItem = (): GatePassItem => ({
@@ -56,6 +57,15 @@ export function getQrPayload(pass: Partial<GatePass>, settings: CompanySettings)
   }
 
   return getShareableGatePassUrl(pass, settings);
+}
+
+export async function generateGatePassQrCode(pass: Partial<GatePass>, settings: CompanySettings) {
+  const payloadUrl = getQrPayload(pass, settings);
+  return QRCode.toDataURL(payloadUrl, {
+    width: 320,
+    margin: 2,
+    color: { dark: "#0f5132", light: "#ffffff" },
+  });
 }
 
 export function readSharedGatePass(hash: string): SharedGatePassPayload | undefined {

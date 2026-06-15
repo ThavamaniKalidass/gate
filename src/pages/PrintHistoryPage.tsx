@@ -10,11 +10,9 @@ import { Input, Select } from "../components/ui/Form";
 import { useAppStore } from "../store/AppContext";
 import { departments, type GatePass } from "../types/gate-pass";
 import { exportElementToPdf } from "../utils/pdf";
-
 type PendingAction = "download" | "print" | null;
-
 export function PrintHistoryPage() {
-  const { passes, deletePass, settings } = useAppStore();
+ const { passes, deletePass, settings } = useAppStore();
   const [query, setQuery] = useState("");
   const [department, setDepartment] = useState("All");
   const [page, setPage] = useState(1);
@@ -58,8 +56,11 @@ export function PrintHistoryPage() {
     setPreviewOpen(true);
   }
 
-  function runAction(pass: GatePass, action: PendingAction) {
-    setSelectedPass(pass);
+  async function runAction(pass: GatePass, action: PendingAction) {
+    let activePass = pass;
+  
+
+    setSelectedPass(activePass);
     setPreviewOpen(true);
     setPendingAction(action);
   }
@@ -103,8 +104,8 @@ export function PrintHistoryPage() {
                   <td><Badge>{pass.status}</Badge></td>
                   <td className="flex justify-end gap-2 py-2">
                     <Button variant="ghost" size="icon" aria-label="View" onClick={() => openPreview(pass)}><Eye className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" aria-label="Download PDF" onClick={() => runAction(pass, "download")}><Download className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" aria-label="Print" onClick={() => runAction(pass, "print")}><Printer className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" aria-label="Download PDF" onClick={() => void runAction(pass, "download")}><Download className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" aria-label="Print" onClick={() => void runAction(pass, "print")}><Printer className="h-4 w-4" /></Button>
                     <Button variant="ghost" size="icon" aria-label="Delete" onClick={() => handleDelete(pass.id)}><Trash2 className="h-4 w-4 text-red-600" /></Button>
                   </td>
                 </tr>
