@@ -93,7 +93,7 @@ export function GatePassPreview({ pass, settings }: { pass: Partial<GatePass>; s
         </footer>
 
         <div className="pdf-bottom-row relative z-10 mt-8">
-          <div className="text-sm font-semibold text-center text-slate-700">IT TEAM : THIYAGARAJAN : 739.774.4007  |  ALEX : 739.774.4006</div>
+          <div className="text-xs text-slate-500">IT TEAM : THIYAGARAJAN : 739.774.4007  |  ALEX : 739.774.4006</div>
         </div>
       </article>
     </div>
