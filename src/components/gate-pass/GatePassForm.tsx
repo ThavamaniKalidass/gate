@@ -22,7 +22,7 @@ const defaultValues = (): GatePassFormValues => ({
   employeeId: "",
   department: "IT",
   date: format(new Date(), "yyyy-MM-dd"),
-  preparedTime: format(new Date(), "HH:mm"),
+  preparedTime: format(new Date(), "HH:mm"), 
   fromLocation: "",
   toLocation: "",
   items: [emptyItem()],

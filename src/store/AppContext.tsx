@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { CompanySettings, GatePass } from "../types/gate-pass";
+import { fixedCompanyAddress } from "../types/gate-pass";
 import { gatePassService } from "../services/gatePassService";
 import { supabase } from "../lib/supabase";
 
@@ -20,7 +21,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [passes, setPasses] = useState<GatePass[]>([]);
   const [settings, setSettings] = useState<CompanySettings>({
     companyName: "",
-    address: { line1: "", city: "", state: "", postalCode: "", country: "" } as any,
+    address: fixedCompanyAddress,
     publicUrl: "",
     logo: "/smb-brand-glow.png",
   })

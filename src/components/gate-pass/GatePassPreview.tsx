@@ -100,12 +100,31 @@ export function GatePassPreview({ pass, settings }: { pass: Partial<GatePass>; s
   );
 }
 
-function AddressText({ address }: { address: string }) {
-  const [before, after] = address.split(fixedCompanyAddressTitle);
+function AddressText({ address }: { address?: any }) {
+  const addressText =
+    typeof address === "string"
+      ? address
+      : fixedCompanyAddress;
 
-  if (!address.includes(fixedCompanyAddressTitle)) {
-    return <p className="mt-1 max-w-md text-sm font-bold text-slate-600">{fixedCompanyAddressTitle}</p>;
+  if (!addressText) {
+    return (
+      <p className="mt-1 max-w-md text-sm text-slate-600">
+        {fixedCompanyAddress}
+      </p>
+    );
   }
+
+  if (!addressText.includes(fixedCompanyAddressTitle)) {
+    return (
+      <p className="mt-1 max-w-md text-sm text-slate-600">
+        {addressText}
+      </p>
+    );
+  }
+
+  const parts = addressText.split(fixedCompanyAddressTitle);
+  const before = parts[0] ?? "";
+  const after = parts[1] ?? "";
 
   return (
     <p className="mt-1 max-w-md text-sm text-slate-600">
