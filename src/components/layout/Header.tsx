@@ -1,16 +1,17 @@
-import { Bell, Download, Moon, Sun } from "lucide-react";
+import { Bell, Download } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { useClock } from "../../hooks/useClock";
-import { useAppStore } from "../../store/AppContext";
+// import { useAppStore } from "../../store/AppContext";
 import { Button } from "../ui/Button";
 import { supabase } from "../../lib/supabase";
 import { useEffect, useState } from "react";
 
+
 export function Header({ title }: { title: string }) {
   const clock = useClock();
   const location = useLocation();
-  const { darkMode, setDarkMode } = useAppStore();
+// const { darkMode, setDarkMode } = useAppStore();
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
