@@ -27,7 +27,7 @@ export function PrintHistoryPage() {
     return passes
       .filter((pass) => [pass.gatePassNumber, pass.employeeName, pass.department].join(" ").toLowerCase().includes(query.toLowerCase()))
       .filter((pass) => department === "All" || pass.department === department)
-      .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+      .sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""));
   }, [department, passes, query]);
   const pageItems = filtered.slice((page - 1) * pageSize, page * pageSize);
   const pages = Math.max(1, Math.ceil(filtered.length / pageSize));
@@ -109,6 +109,11 @@ export function PrintHistoryPage() {
                   </td>
                 </tr>
               ))}
+              {!pageItems.length && (
+                <tr>
+                  <td colSpan={7} className="py-8 text-center text-[var(--muted)]">No gate passes found</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

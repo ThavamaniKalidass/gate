@@ -18,7 +18,7 @@ export function DashboardPage() {
     const date = new Date();
     date.setMonth(date.getMonth() - (5 - index));
     const key = date.toISOString().slice(0, 7);
-    return { month: date.toLocaleString("default", { month: "short" }), passes: passes.filter((pass) => pass.date.startsWith(key)).length };
+    return { month: date.toLocaleString("default", { month: "long" }), passes: passes.filter((pass) => pass.date.startsWith(key)).length };
   });
   const departmentUsage = departments.map((department) => ({
     department,

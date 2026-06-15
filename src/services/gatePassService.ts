@@ -17,7 +17,13 @@ function normalizeSettings(settings: Partial<CompanySettings> = {}): CompanySett
 }
 
 function mapRowToPass(row: any): GatePass {
-  return { ...(row.pass as GatePass), id: row.id } as GatePass;
+  const pass = row.pass as GatePass;
+  return {
+    ...pass,
+    id: row.id,
+    createdAt: pass?.createdAt ?? row.created_at ?? new Date().toISOString(),
+    updatedAt: pass?.updatedAt ?? row.updated_at ?? row.created_at ?? new Date().toISOString(),
+  } as GatePass;
 }
 
 const draftCache = new Map<string, Partial<GatePass>>();

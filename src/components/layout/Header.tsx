@@ -43,9 +43,6 @@ export function Header({ title }: { title: string }) {
           <Button className="hidden sm:inline-flex" variant="ghost" size="icon" aria-label="Notifications" onClick={() => toast.info("No unread notifications")}>
             <Bell className="h-5 w-5" />
           </Button>
-          <Button variant="secondary" size="icon" aria-label="Toggle theme" onClick={() => setDarkMode(!darkMode)}>
-            {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-          </Button>
           <Button
             variant="primary"
             aria-label="Download PDF"
